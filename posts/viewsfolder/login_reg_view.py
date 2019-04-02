@@ -1,6 +1,7 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
+from django.contrib.auth import logout as auth_logout
 from rest_framework import views
 from django.contrib import messages
 from rest_framework import status
@@ -13,11 +14,15 @@ class RegistrationPageView(TemplateView):
     def get(self, request):
         return render(request, 'users/register.html')
 
+class LogoutPageView(TemplateView):
+    def get(self, request):
+        auth_logout(request)
+        return render(request, 'users/login.html')
 
 class LoginPageView(views.APIView):
     def get(self, request):
         if request.user.is_authenticated:
-            return redirect('/posts/')
+            return redirect('frontend/posts/feed/')
         else:
             return render(request, 'users/login.html')
 
@@ -41,3 +46,4 @@ class LoginPageView(views.APIView):
         else:
             messages.error(request, 'username or password not correct')
             return Response(status=status.HTTP_400_BAD_REQUEST)
+

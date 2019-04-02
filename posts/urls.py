@@ -15,7 +15,7 @@ from .viewsfolder.feed_views import FrontEndPublicPosts
 from .viewsfolder.feed_views import FrontEndAuthorPosts, BackEndFeed
 from .viewsfolder.feed_views import FrontEndFeed
 from .viewsfolder.login_reg_view import RegistrationPageView
-from .viewsfolder.login_reg_view import LoginPageView
+from .viewsfolder.login_reg_view import LoginPageView, LogoutPageView
 from .viewsfolder.author_following_views import AuthorViewFriendRequests
 from .viewsfolder.author_following_views import AuthorViewFollowing
 from.viewsfolder.feed_views import GetAuthorPosts
@@ -23,6 +23,7 @@ from .viewsfolder.feed_views import UpdateGithubId
 from . import views
 
 urlpatterns = [
+    path('', LogoutPageView.as_view(), name="logout"),
     path('', LoginPageView.as_view(), name='login'),
     path('users/', UserView.as_view(), name='users'),
     path('author/<pk>/friends/', FriendListView.as_view(), name='friendslist'),
