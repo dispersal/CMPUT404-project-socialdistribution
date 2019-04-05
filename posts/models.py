@@ -97,7 +97,7 @@ class Server(models.Model):
 
     def get_author_posts(self, author_id, requestor):
         if self.trailing_slash:
-            url = self.api + '/author/{AUTHOR_ID}/posts/'.format(AUTHOR_ID=author_id) + "/"
+            url = self.api + '/author/{AUTHOR_ID}/posts/'.format(AUTHOR_ID=author_id)
         else:
             url = self.api + '/author/{AUTHOR_ID}/posts'.format(AUTHOR_ID=author_id)
 
@@ -175,9 +175,11 @@ class Server(models.Model):
             print(e)
         return None
 
-
     def send_external_friendrequest(self, requestee, requestor):
-        url = self.api + '/friendrequest'
+        if self.trailing_slash:
+            url = self.api + '/friendrequest/'
+        else:
+            url = self.api + '/friendrequest'
         headers = {'X-Request-User-ID': '{}'.format(requestor['id']),
                    }
 
