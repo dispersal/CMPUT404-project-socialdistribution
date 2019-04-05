@@ -227,7 +227,7 @@ class Server(models.Model):
         https://example.com/author/f3be7f78-d878-46c5-8513-e9ef346a759d/
         """
         user_url = url.split('/author/')[1]
-        user_url = user_url if user_url[-1] == '/' else user_url[:-1]
+        user_url = user_url[:1] if user_url[-1] == '/' else user_url
         return user_url
 
 class Category(models.Model):
