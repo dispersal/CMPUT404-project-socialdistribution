@@ -152,7 +152,7 @@ class FrontEndAuthorPosts(TemplateView):
             if post.contentType == "text/markdown":
                 contentTypes.append(commonmark.commonmark(post.content))
             else:
-                contentTypes.append("<p>" + post.content + "</p>")
+                contentTypes.append("<p>" + escape(post.content) + "</p>")
         return render(request, 'author/author_posts.html', context={'author': author,
                                                                     'author_id': authorid,
                                                                     'posts': serializer.data,
