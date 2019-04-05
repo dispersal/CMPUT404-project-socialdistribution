@@ -92,7 +92,7 @@ class Server(models.Model):
                 WWUser.objects.get_or_create(url=url, user_id=user_data['id'])
                 return user.to_user_model()
         except Exception as e:
-            pass
+            print(e)
         return None
 
     def get_author_posts(self, author_id, requestor):
@@ -112,8 +112,8 @@ class Server(models.Model):
                 if (len(posts_data['posts']) == 0):
                     return None
                 return posts_data['posts']
-        except:
-            pass
+        except Exception as e:
+            print(e)
         return None
 
     def get_external_post(self, post_id, requestor):
@@ -153,7 +153,7 @@ class Server(models.Model):
 
                     return posts_data['posts'][0]
         except Exception as e:
-            pass
+            print(e)
         return None
 
     def get_server_posts(self, requestor):
@@ -197,8 +197,8 @@ class Server(models.Model):
                 posts_data = r.content.decode('utf-8')
                 posts_data = json.loads(posts_data)
                 return posts_data
-        except:
-            pass
+        except Exception as e:
+            print(e)
         return None
 
     def send_external_comment(self, data):
