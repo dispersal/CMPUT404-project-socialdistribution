@@ -171,12 +171,11 @@ class GetAuthorPosts(views.APIView):
     @method_decorator(login_required)
     def get(self, request, authorid):
         paginator = CustomPagination()
-        author = get_user(authorid)
         try:
-            local_author = User.objects.get(pk=authorid)
+            author = User.objects.get(pk=authorid)
         except:
-            local_author = False
-        if author == None:
+            author = None
+        if author is None:
             raise Http404
         external_header = request.META.get('HTTP_X_REQUEST_USER_ID', False)
         serve_other_servers = preferences.SitePreferences.serve_others_posts
