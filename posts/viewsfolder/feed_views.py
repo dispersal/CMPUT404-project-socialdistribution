@@ -106,7 +106,7 @@ class FrontEndAuthorPosts(TemplateView):
             local_author = User.objects.get(pk=authorid)
         except:
             local_author = False
-        if author == None:
+        if author is None:
             raise Http404
         user = request.user
         author_serialized = UserSerializer(instance=author)

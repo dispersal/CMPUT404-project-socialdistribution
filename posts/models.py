@@ -89,6 +89,7 @@ class Server(models.Model):
                 user_data['id'] = self.__parse_id_from_url(user_data['id'])
                 user_data['host'] = self.api
                 user = UserSerializer(data=user_data)
+                print(user_data['id'])
                 WWUser.objects.get_or_create(url=url, user_id=user_data['id'])
                 return user.to_user_model()
         except Exception as e:
@@ -225,10 +226,9 @@ class Server(models.Model):
         Parses a user id from user urls in the form:
         https://example.com/author/f3be7f78-d878-46c5-8513-e9ef346a759d/
         """
-        parsed = urlparse(url)
-        path = parsed.path.strip('/')
-        path = path.split('/')
-        return path[-1]
+        user_url = url.split('/author/')[1]
+        user_url = user_url if user_url[-1] == '/' else user_url[:-1]
+        return user_url
 
 class Category(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
