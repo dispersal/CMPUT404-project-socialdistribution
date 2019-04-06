@@ -250,6 +250,8 @@ class FrontEndFeed(TemplateView):
     def get(self, request):
         user = request.user
         posts = self.get_feed(user)
+        ext_posts = mr_worldwide(user, False)
+        posts = local_posts_list + worldwide_posts_list
         serializer = PostSerializer(posts, many=True)
         contentTypes = []
         for post in posts:

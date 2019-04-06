@@ -77,7 +77,6 @@ def are_friends(ww_user, ww_author):
 
 def get_friends(ww_user):
     """Change to WW_user"""
-    # TODO Update this for node to node
     follows = Follow.objects.filter(follower=ww_user).values_list('followee', flat=True)
     return follows
 
@@ -138,7 +137,7 @@ def visible_to(post, ww_user, direct=False, local=True):
     if ((not direct) and post.unlisted):
         return False
     # TODO: Ensure serveronly posts don't leave the server!
-    if (post.visibility == "PUBLIC" or post.visibility == "SERVERONLY"):
+    if (post.visibility == "PUBLIC" or (post.visibility == "SERVERONLY" and local)):
         return True
     #f_level = get_friendship_level(ww_user, ww_author)
     if (post.visibility == "FRIENDS" and not are_friends(ww_user,ww_author)):
@@ -185,7 +184,7 @@ def post_dict_to_model(post):
     return post_model
 
 
-def mr_worldwide(requestor, is_proxy_request, visibility="PUBLIC", exclude_servers=[]):
+def mr_worldwide(requestor, is_proxy_request, visibility=["PUBLIC"], exclude_servers=[]):
     """
     returns list of worldwide Post objects, with source and origin properly set
     requestor is a user object
@@ -215,7 +214,7 @@ def mr_worldwide(requestor, is_proxy_request, visibility="PUBLIC", exclude_serve
             continue
         posts_list = posts_data['posts']
         for post_dict in posts_list:
-            if (post_dict["visibility"] != visibility):
+            if (post_dict["visibility"] in visibility):
                 # continue to next iteration
                 continue
             if (post_dict["contentType"] in image_types):
@@ -237,6 +236,57 @@ def mr_worldwide(requestor, is_proxy_request, visibility="PUBLIC", exclude_serve
 
     return all_posts
 
+def get_external_feed(requestor):
+    """
+    returns list of worldwide Post objects, with source and origin properly set
+    requestor is a user object
+    Arguments:
+        - is_proxy_request:
+            - boolean which describes if this requestor is another server or end user
+        - visibility:
+            - only posts that have this visibility will be returned
+            - other servers should only be sending us PUBLIC posts anyways so this
+              is more for clarity than anything
+        - exclude_servers:
+            - list of servers not to fetch from
+            - basically just to avoid cycles but idk if this is how we'll do it
+    Return:
+        - all_posts : list
+            - list of Post objects from every server we are connected to, excluding servers in 'exclude_servers'
+    """
+    image_types = ['image/png;base64', 'image/jpeg;base64']
+
+    external_servers = Server.objects.all()
+    all_posts = []
+
+    for server in external_servers:
+        # TODO: handle case where this returns None, or dont idk
+        posts_data = server.get_server_posts(requestor)
+        if (posts_data is None):
+            continue
+        posts_list = posts_data['posts']
+        for post_dict in posts_list:
+            if (post_dict["visibility"] in visibility):
+                # continue to next iteration
+                continue
+            if (post_dict["contentType"] in image_types):
+                # continue to next iteration
+                # NOTE: shouldnt need to do this since other api's shouldnt be sending us
+                # posts with image content from /posts/ anyways but this is ensures image blobs arent shown
+                continue
+
+            post_model = post_dict_to_model(post_dict)
+            # NOTE: this might not be accurate, server.server might not be what im expecting
+            # what I mean: does server.server also have http proto prefix? ¯\_(ツ)_/¯
+            # but whatever frontend wont see source anyways
+            new_source = "{}/posts/{}".format(server.server, post_model.id)
+            post_model.source = new_source
+            all_posts.append(post_model)
+
+    # for post in all_posts:
+    #     print(post.title)
+
+    return all_posts
 
 def get_local_post(post_id):
     try:
