@@ -131,9 +131,12 @@ def is_local_user(url):
 
 
 def visible_to(post, ww_user, direct=False, local=True):
+    print(post.author_id)
     author = get_user(post.author_id)
+    print(author.id)
     ww_author = get_ww_user(user_id=author.id)
-    if (ww_user.user_id == author.id):
+    print(ww_author)
+    if (ww_user.user_id == ww_author.user_id):
         return True
     if ((not direct) and post.unlisted):
         return False
