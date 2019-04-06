@@ -255,24 +255,27 @@ def get_external_feed(requestor):
             - list of Post objects from every server we are connected to, excluding servers in 'exclude_servers'
     """
     image_types = ['image/png;base64', 'image/jpeg;base64']
-
+    ww_user = get_ww_user(requestor.id)
     external_servers = Server.objects.all()
     all_posts = []
 
     for server in external_servers:
         # TODO: handle case where this returns None, or dont idk
-        posts_data = server.get_server_posts(requestor)
+        posts_data = server.get_ext_feed(requestor)
         if (posts_data is None):
             continue
         posts_list = posts_data['posts']
         for post_dict in posts_list:
-            if (post_dict["visibility"] in visibility):
+            if (post_dict["visibility"] == "FRIENDS"):
                 # continue to next iteration
-                continue
+                try:
+                    # Ghetto way to check if the user is following the user locally
+                    ww_author = WWUser.objects.get(url=post_dict["author"]["url"])
+                    follow =Follow.objects.get(follower=ww_user,followee=post_dict["author"]["url"])
+                except:
+                    continue
             if (post_dict["contentType"] in image_types):
                 # continue to next iteration
-                # NOTE: shouldnt need to do this since other api's shouldnt be sending us
-                # posts with image content from /posts/ anyways but this is ensures image blobs arent shown
                 continue
 
             post_model = post_dict_to_model(post_dict)

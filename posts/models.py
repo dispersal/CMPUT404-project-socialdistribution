@@ -183,8 +183,8 @@ class Server(models.Model):
             url = self.api + '/author//posts'
         requestor_serialized = UserSerializer(instance=requestor)
         ww_requestor = get_ww_user(requestor.id)
-        headers = {'X-Request-User-ID': ww_requestor.url
-                   }
+        headers = {'X-Request-User-ID': ww_requestor.url, 'X-UUID':ww_requestor.user_id}
+
         try:
             r = requests.get(url, auth=HTTPBasicAuth(self.username, self.password), headers=headers)
             if r.status_code == 200:
