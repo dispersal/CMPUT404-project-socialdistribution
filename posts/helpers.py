@@ -263,9 +263,9 @@ def get_external_post(post_id, requestor):
             comment_list = []
             for comment in post['comments']:
                 # CHeck if paginated
-                user_id = comment['author']['url'].split('/author/')[-1]
+                user_id = get_id_from_url(comment['author']['url'])
                 commenter_wwuser = WWUser.objects.get_or_create(url=comment['author']['url'],
-                                                                user_id=comment['author']['url'].split('/author/')[-1])[
+                                                                user_id=user_id)[
                     0]
                 comment_model = Comment(comment=comment['comment'])
                 comment_model.author = commenter_wwuser
