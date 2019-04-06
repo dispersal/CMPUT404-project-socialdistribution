@@ -89,7 +89,6 @@ class Server(models.Model):
                 user_data['id'] = self.__parse_id_from_url(user_data['id'])
                 user_data['host'] = self.api
                 user = UserSerializer(data=user_data)
-                print(user_data['id'])
                 WWUser.objects.get_or_create(url=self.__remove_traiing_slash(url), user_id=user_data['id'])
                 return user.to_user_model()
         except Exception as e:
