@@ -214,7 +214,7 @@ def mr_worldwide(requestor, is_proxy_request, visibility=["PUBLIC"], exclude_ser
             continue
         posts_list = posts_data['posts']
         for post_dict in posts_list:
-            if (post_dict["visibility"] in visibility):
+            if not (post_dict["visibility"] in visibility):
                 # continue to next iteration
                 continue
             if (post_dict["contentType"] in image_types):
