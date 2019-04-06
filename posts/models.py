@@ -89,7 +89,7 @@ class Server(models.Model):
                 user_data['id'] = self.__parse_id_from_url(user_data['id'])
                 user_data['host'] = self.api
                 user = UserSerializer(data=user_data)
-                WWUser.objects.get_or_create(url=self.__remove_traiing_slash(url), user_id=user_data['id'])
+                WWUser.objects.get_or_create(url=self.__remove_trailing_slash(url), user_id=user_data['id'])
                 return user.to_user_model()
         except Exception as e:
             print(e)
@@ -229,7 +229,7 @@ class Server(models.Model):
         user_url = user_url[:1] if user_url[-1] == '/' else user_url
         return user_url
 
-    def __remove_traiing_slash(self, string):
+    def __remove_trailing_slash(self, string):
         return string if string[-1] != '/' else string[:-1]
 
 class Category(models.Model):
