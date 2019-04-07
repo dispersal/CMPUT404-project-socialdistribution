@@ -82,7 +82,6 @@ function submitForm() {
 
 function makePost(imageIDs = undefined) {
     let authheader = Cookies.get('authheader');
-    let content;
     let title = document.getElementById('title').value;
     let description = document.getElementById('description').value;
     let contentType = document.getElementById('contentType').value;
@@ -95,15 +94,7 @@ function makePost(imageIDs = undefined) {
             visibleToArray.push(element.getAttribute("data-value"));
         }
     }
-    if (imageIDs !== undefined) {
-        imageIDs = imageIDs.map((id) => {
-            return window.location.origin + '/frontend/posts/' + id + '\n';
-        });
-        content = imageIDs.join(' ') + '\n' + document.getElementById('content').value;
-
-    } else {
-        content = document.getElementById('content').value;
-    }
+    let content = document.getElementById('content').value;
     let body = {
         title: title,
         description: description,
