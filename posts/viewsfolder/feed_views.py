@@ -65,10 +65,17 @@ class FrontEndPublicPosts(TemplateView):
         posts = local_posts_list + worldwide_posts_list
 
         serializer = PostSerializer(posts, many=True)
+        image_types = ['image/png;base64', 'image/jpeg;base64']
         contentTypes = []
         for post in posts:
             if post.contentType == "text/markdown":
                 contentTypes.append(commonmark.commonmark(post.content))
+            elif (post.contentType in image_types):
+                try:
+                    base64 = post.content.split(',')[1]
+                except:
+                    base64 = post.content
+                contentTypes.append("<img class=\"post-image\"src=\"data:{}, {}\" />".format(post.contentType, base64))
             else:
                 contentTypes.append("<p>" + escape(post.content) + "</p>")
         return render(request, 'post/public-posts.html',
@@ -259,9 +266,16 @@ class FrontEndFeed(TemplateView):
         posts = self.get_feed(user)
         serializer = PostSerializer(posts, many=True)
         contentTypes = []
+        image_types = ['image/png;base64', 'image/jpeg;base64']
         for post in posts:
             if post.contentType == "text/markdown":
                 contentTypes.append(commonmark.commonmark(post.content))
+            elif (post.contentType in image_types):
+                try:
+                    base64 = post.content.split(',')[1]
+                except:
+                    base64 = post.content
+                contentTypes.append("<img class=\"post-image\"src=\"data:{}, {}\" />".format(post.contentType, base64))
             else:
                 contentTypes.append("<p>" + escape(post.content) + "</p>")
 
