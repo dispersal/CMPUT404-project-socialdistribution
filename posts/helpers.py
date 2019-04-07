@@ -227,7 +227,7 @@ def mr_worldwide(requestor, is_proxy_request, visibility=["PUBLIC"], exclude_ser
             # NOTE: this might not be accurate, server.server might not be what im expecting
             # what I mean: does server.server also have http proto prefix? ¯\_(ツ)_/¯
             # but whatever frontend wont see source anyways
-            new_source = "{}/posts/{}".format(server.server, post_model.id)
+            new_source = "{}/posts/{}".format(server.api, post_model.id)
             post_model.source = new_source
             all_posts.append(post_model)
 
@@ -282,7 +282,7 @@ def get_external_feed(requestor):
             # NOTE: this might not be accurate, server.server might not be what im expecting
             # what I mean: does server.server also have http proto prefix? ¯\_(ツ)_/¯
             # but whatever frontend wont see source anyways
-            new_source = "{}/posts/{}".format(server.server, post_model.id)
+            new_source = "{}/posts/{}".format(server.api, post_model.id)
             post_model.source = new_source
             all_posts.append(post_model)
 
