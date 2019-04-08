@@ -408,13 +408,15 @@ def get_or_create_external_header(external_header):
 def get_ext_foaf(local_user,ext_user):
     # Returns a boolean indicating whether these users are foaf
     # THESE ARE WW USERS
-    local_follows = Follow.objects.filter(follower=local_user).values_list("followee")
-    local_follows = [x for x in local_follows]
+    local_follows = Follow.objects.filter(follower=local_user).values_list("followee",flat=True)
+    local_follows = [str(id) for str(id) in local_follows]
+    print(local_follows)
     if local_follows:
         url = ext_user.url + ("/" if (ext_user.url[-1]!="/") else "") + "friends/"
         ext_friends = get_external_friends(url)
+        print(ext_friends)
         for follow in local_follows:
-            if follow[0] in ext_friends:
+            if follow in ext_friends:
                 return True
     else:
         return False
