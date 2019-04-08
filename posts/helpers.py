@@ -32,9 +32,10 @@ def parse_id_from_url(url):
     Parses a user id from user urls in the form:
     https://example.com/author/f3be7f78-d878-46c5-8513-e9ef346a759d/
     """
-    user_url = url.split('/author/')[-1]
-    user_url = user_url[:-1] if user_url[-1] == '/' else user_url
-    return user_url
+    parsed = urlparse(url)
+    path = parsed.path.strip('/')
+    path = path.split('/')
+    return path[-1]
 
 
 def parse_host_from_url(url):
