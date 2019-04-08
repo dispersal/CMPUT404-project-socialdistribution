@@ -86,14 +86,13 @@ def get_friends(ww_user):
 
 def are_FOAF(ww_user, ww_other):
     """Needs WW Users"""
-    # TODO Update for node to node
     if ww_other.local:
         userfriends = get_friends(ww_user)
         otherfriends = get_friends(ww_other)
         bridges = userfriends.intersection(otherfriends)
         return bridges.exists()
     else:
-        return get_ext_foaf(ww_other,ww_user)
+        return get_ext_foaf(ww_user,ww_other)
 
 
 def get_friendship_level(ww_user, ww_author):
@@ -416,7 +415,8 @@ def get_ext_foaf(local_user,ext_user):
         ext_friends = get_external_friends(url)
         print(ext_friends)
         for follow in local_follows:
-            if follow in ext_friends:
+            if follow in ext_friends
+                print("PASSED FOAF CHECK")
                 return True
     else:
         return False
