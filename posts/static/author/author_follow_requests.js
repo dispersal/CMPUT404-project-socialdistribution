@@ -21,7 +21,7 @@ function approve_follow_request(target_user) {
             "Content-Type": "application/json",
         body: {}
         },
-    }).then((res) => {z
+    }).then((res) => {
         window.location.reload(true)
     });
 }
