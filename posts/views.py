@@ -30,7 +30,6 @@ class UserView(views.APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    @method_decorator(login_required)
     def get(self, request):
         user = self.get_user(request.user)
         serializer = UserSerializer(user)
