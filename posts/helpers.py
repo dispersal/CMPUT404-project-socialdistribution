@@ -71,7 +71,8 @@ def are_friends(ww_user, ww_author):
             other_friendship = get_follow(follower=ww_user, followee=ww_author)
         else:
             # external friendship, hard and sad :(
-            friends = get_external_friends(ww_user)
+            url = ww_user.url + ("/" if ww_user.url[-1]!= "/" else "") + "friends/"
+            friends = get_external_friends(url)
             if ww_author in friends:
                 other_friendship = True
     return local_friendship and other_friendship
