@@ -158,7 +158,11 @@ class PostViewID(views.APIView):
             authorid = post_model.author.id
             user = request.user
             other = self.get_user(authorid)
-            if (are_FOAF(ww_other=ww_requestor, ww_local=ww_post_author)):
+            # Bear with me, I want author=requestor and vice versa. Trust me.
+            # - Owen McLeod, 2019
+            if are_friends(ww_author=ww_requestor,ww_user=ww_post_author):
+                return Response(serializer.data)
+            elif (are_FOAF(ww_other=ww_requestor, ww_local=ww_post_author)):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(status=status.HTTP_403_FORBIDDEN)
         if post_model.visibility == "FRIENDS":
