@@ -32,10 +32,9 @@ def parse_id_from_url(url):
     Parses a user id from user urls in the form:
     https://example.com/author/f3be7f78-d878-46c5-8513-e9ef346a759d/
     """
-    parsed = urlparse(url)
-    path = parsed.path.strip('/')
-    path = path.split('/')
-    return path[-1]
+    user_url = url.split('/author/')[-1]
+    user_url = user_url[:-1] if user_url[-1] == '/' else user_url
+    return user_url
 
 
 def parse_host_from_url(url):
@@ -96,7 +95,17 @@ def are_FOAF(ww_local, ww_other):
         userfriends = get_friends(ww_local)
         otherfriends = get_friends(ww_other)
         bridges = userfriends.intersection(otherfriends)
-        return bridges.exists()
+        if bridges.exists():
+            for bridge in list(bridges):
+                ww_middle = get_ww_user(parse_id_from_url(bridge))
+                if ww_middle and ww_middle.local:
+                    return are_friends(ww_middle, ww_local) and are_friends(ww_middle, ww_other)
+                else:
+                    final_check_url = bridge + ("/" if (bridge[-1] != "/") else "") + "friends/"
+                    third_friends = get_external_friends(final_check_url)
+                    if str(ww_other.url) in third_friends and str(ww_local.url) in third_friends:
+                        return True
+        return False
     else:
         return get_ext_foaf(ww_local,ww_other)
 
@@ -426,7 +435,7 @@ def get_ext_foaf(local_user,ext_user):
         ext_friends = get_external_friends(url)
         for follow in local_follows:
             if follow in ext_friends:
-                ww_middle = get_ww_user(url=follow)
+                ww_middle = get_ww_user(parse_id_from_url(follow))
                 if ww_middle and ww_middle.local:
                     return are_friends(ww_middle,local_user) and are_friends(ww_middle,ext_user)
                 else:
