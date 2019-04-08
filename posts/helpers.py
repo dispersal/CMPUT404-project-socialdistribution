@@ -84,15 +84,15 @@ def get_friends(ww_user):
     return follows
 
 
-def are_FOAF(ww_user, ww_other):
+def are_FOAF(ww_local, ww_other):
     """Needs WW Users"""
     if ww_other.local:
-        userfriends = get_friends(ww_user)
+        userfriends = get_friends(ww_local)
         otherfriends = get_friends(ww_other)
         bridges = userfriends.intersection(otherfriends)
         return bridges.exists()
     else:
-        return get_ext_foaf(ww_user,ww_other)
+        return get_ext_foaf(ww_local,ww_other)
 
 
 def get_friendship_level(ww_user, ww_author):
@@ -146,7 +146,7 @@ def visible_to(post, ww_user, direct=False, local=True):
     if friends:
         foaf = True
     else:
-        foaf = are_FOAF(ww_user,ww_author)
+        foaf = are_FOAF(ww_local=ww_author,ww_other=ww_user)
     if (post.visibility == "FOAF" and not foaf):
         return False
     if (post.visibility == "PRIVATE" and not has_private_access(ww_user, post)):
@@ -277,7 +277,7 @@ def get_external_feed(requestor):
             if (post_dict["visibility"] == "FOAF"):
                 try:
                     ww_author = WWUser.objects.get(url=post_dict["author"]["url"])
-                    are_foaf = are_FOAF(ww_user,ww_author)
+                    are_foaf = are_FOAF(ww_local=ww_user,ww_other=ww_author)
                 except:
                     continue
                 if not are_foaf:
