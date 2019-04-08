@@ -12,7 +12,7 @@ from django.utils.decorators import method_decorator
 from django.shortcuts import render
 import commonmark
 from posts.helpers import are_friends, get_follow, get_friendship_level, visible_to, get_or_create_ww_user, get_ww_user
-from posts.helpers import get_or_create_external_header, get_external_feed
+from posts.helpers import get_or_create_external_header, get_external_feed, get_ext_foaf
 from posts.helpers import are_friends, get_follow, get_friendship_level, visible_to, get_or_create_ww_user, get_ww_user, get_friends
 from posts.helpers import get_or_create_external_header
 from posts.pagination import CustomPagination
