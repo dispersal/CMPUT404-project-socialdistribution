@@ -73,6 +73,7 @@ class PostView(views.APIView):
 
 
 class PostCreateView(TemplateView):
+    @method_decorator(login_required)
     def get(self, request):
         serializer = PostSerializer()
         return render(request, "makepost/make-post.html", context={"serializer": serializer})
@@ -92,7 +93,7 @@ class PostViewID(views.APIView):
         except:
             raise Http404
 
-    # TODO: (<AUTHENTICATION>, <VISIBILITY>) check VISIBILITY before getting
+    @method_decorator(login_required)
     def get(self, request, pk):
         paginator = CustomPagination()
         post = self.get_post(pk)
@@ -122,6 +123,7 @@ class PostViewID(views.APIView):
             return Response(serializer.data)
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+    @method_decorator(login_required)
     def post(self, request, pk):
         paginator = CustomPagination()
         post = self.get_post(pk)
@@ -171,8 +173,11 @@ class PostViewID(views.APIView):
 
         return Response(status=status.HTTP_403_FORBIDDEN)
 
+    @method_decorator(login_required)
     def put(self, request, pk):
         post = get_local_post(pk)
+        if request.user != post.author:
+            return Response(status=status.HTTP_403_FORBIDDEN)
         newPostSerializer = PostSerializer(post, data=request.data, context={"user": request.user}, partial=True)
         if newPostSerializer.is_valid():
             newPostSerializer.save()

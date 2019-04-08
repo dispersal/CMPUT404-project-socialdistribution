@@ -140,6 +140,7 @@ class PostView(views.APIView):
 
 
 class PostCreateView(TemplateView):
+    @method_decorator(login_required)
     def get(self, request):
         serializer = PostSerializer()
         return render(request, "makepost/make-post.html", context={"serializer": serializer})

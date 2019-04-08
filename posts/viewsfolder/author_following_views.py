@@ -54,6 +54,7 @@ class FriendListView(views.APIView):
         else:
             return False
 
+    @method_decorator(login_required)
     def get(self, request, pk):
         user = self.get_user(pk)
         if user == None:
@@ -103,6 +104,7 @@ class AreFriendsView(views.APIView):
         except User.DoesNotExist:
             return None
 
+    @method_decorator(login_required)
     def get(self, request, authorid1, authorid2, service2=None):
         authors = [str(authorid1), str(authorid2)]
         data = {
@@ -208,6 +210,7 @@ class FriendRequestView(views.APIView):
         except Follow.DoesNotExist:
             return False
 
+    @method_decorator(login_required)
     def post(self, request):
         # Author = IS the person requesting
         # Friend = The person who is being requested
