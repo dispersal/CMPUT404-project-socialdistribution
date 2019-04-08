@@ -426,12 +426,16 @@ def get_ext_foaf(local_user,ext_user):
         ext_friends = get_external_friends(url)
         for follow in local_follows:
             if follow in ext_friends:
-                final_check_url = follow + ("/" if (follow[-1]!="/") else "") + "friends/"
-                third_friends = get_external_friends(final_check_url)
-                if str(ext_user.url) in third_friends and str(local_user.url) in third_friends:
-                    return True
-    else:
-        return False
+                ww_middle = get_ww_user(url=follow)
+                if ww_middle and ww_middle.local:
+                    return are_friends(ww_middle,local_user) and are_friends(ww_middle,ext_user)
+                else:
+                    final_check_url = follow + ("/" if (follow[-1]!="/") else "") + "friends/"
+                    third_friends = get_external_friends(final_check_url)
+                    if str(ext_user.url) in third_friends and str(local_user.url) in third_friends:
+                        return True
+        else:
+            return False
 
 
 
