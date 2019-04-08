@@ -160,7 +160,7 @@ class PostViewID(views.APIView):
             other = self.get_user(authorid)
             # Bear with me, I want author=requestor and vice versa. Trust me.
             # - Owen McLeod, 2019
-            if are_friends(ww_author=ww_requestor,ww_user=ww_post_author):
+            if are_friends(ww_author=ww_post_author,ww_user=ww_requestor):
                 return Response(serializer.data)
             elif (are_FOAF(ww_other=ww_requestor, ww_local=ww_post_author)):
                 return Response(serializer.data, status=status.HTTP_200_OK)
