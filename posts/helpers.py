@@ -415,7 +415,7 @@ def get_ext_foaf(local_user,ext_user):
         ext_friends = get_external_friends(url)
         print(ext_friends)
         for follow in local_follows:
-            if follow in ext_friends
+            if follow in ext_friends:
                 print("PASSED FOAF CHECK")
                 return True
     else:
