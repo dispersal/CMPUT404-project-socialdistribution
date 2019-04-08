@@ -15,7 +15,7 @@ from posts.serializers import CommentSerializer, PostSerializer
 
 class CommentViewList(views.APIView):
 
-    # TODO: (<AUTHENTICATION>, <VISIBILITY>) check VISIBILITY before posting
+    @method_decorator(login_required)
     def post(self, request, post_id):
         if not request.user.approved:
             raise PermissionDenied
@@ -55,7 +55,7 @@ class CommentViewList(views.APIView):
         data = {'message': message, 'success': success, 'query': query}
         return Response(data=data, status=status_val)
 
-    # TODO: (<AUTHENTICATION>, <VISIBILITY>) check VISIBILITY before getting
+    @method_decorator(login_required)
     def get(self, request, post_id):
         paginator = CustomPagination()
         comments = Comment.objects.filter(parent_post_id=post_id).order_by("-published")

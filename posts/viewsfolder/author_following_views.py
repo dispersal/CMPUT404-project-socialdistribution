@@ -139,7 +139,6 @@ class FollowReqListView(views.APIView):
         except FollowRequest.DoesNotExist:
             return []
 
-    @method_decorator(login_required)
     def get(self, request):
         user = request.user
         user_serialized = UserSerializer(instance=user)

@@ -168,6 +168,7 @@ class PostSerializer(serializers.HyperlinkedModelSerializer):
         required=False,
         read_only=False
     )
+    description = serializers.CharField(required=False)
     visibleTo = VisibleTo(required=False, many=True, read_only=False)
     origin = serializers.SerializerMethodField(read_only=True)
     source = serializers.SerializerMethodField(read_only=True)

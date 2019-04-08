@@ -38,6 +38,7 @@ class FrontEndPublicPosts(TemplateView):
         allPosts = self.get_posts()
         return allPosts
 
+    @method_decorator(login_required)
     def get(self, request):
         # The Idea
         # although not bothering with defining source and origin idk
@@ -262,6 +263,7 @@ class FrontEndFeed(TemplateView):
                 feedPosts.append(post.id)
         return Post.objects.filter(id__in=feedPosts).order_by("-published")
 
+    @method_decorator(login_required)
     def get(self, request):
         user = request.user
         local_posts_list = list(self.get_feed(user))
@@ -304,6 +306,7 @@ class BackEndFeed(views.APIView):
     def get_posts(self):
         return Post.objects.filter(unlisted=False).order_by("-published")
 
+    @method_decorator(login_required)
     def get(self, request):
         paginator = CustomPagination()
         # Since we will not be using our api going to use the preferences as a determiner for this.
