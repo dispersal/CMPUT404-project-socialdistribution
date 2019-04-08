@@ -98,12 +98,21 @@ def are_FOAF(ww_local, ww_other):
         bridges = userfriends.intersection(otherfriends)
         if bridges.exists():
             for bridge in list(bridges):
-                ww_middle = get_ww_user(parse_id_from_url(bridge))
+                url_middle = bridge.split('/author/')[-1]
+                id_middle = url_middle[:-1] if url_middle[-1] == '/' else url_middle
+                ww_middle = get_ww_user(id_middle)
                 if ww_middle and ww_middle.local:
-                    return are_friends(ww_middle, ww_local) and are_friends(ww_middle, ww_other)
+                    ww_local_friendship = get_follow(follower=ww_middle, followee=ww_local)
+                    ww_other_friendship = get_follow(follower=ww_middle, followee=ww_other)
+                    print("CHECKING LOCAL THIRD HANDSHAKE")
+                    print(ww_local_friendship)
+                    print(ww_other_friendship)
+                    return ww_local_friendship and ww_other_friendship
                 else:
                     final_check_url = bridge + ("/" if (bridge[-1] != "/") else "") + "friends/"
+                    print(final_check_url)
                     third_friends = get_external_friends(final_check_url)
+                    print(third_friends)
                     if str(ww_other.url) in third_friends and str(ww_local.url) in third_friends:
                         return True
         return False
