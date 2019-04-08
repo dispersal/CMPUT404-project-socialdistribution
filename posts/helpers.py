@@ -283,8 +283,9 @@ def get_external_feed(requestor):
             if (post_dict["visibility"] == "FOAF"):
                 try:
                     ww_author = WWUser.objects.get(url=post_dict["author"]["url"])
+                    follow = get_follow(follower=ww_user,followee=ww_author)
                     if follow:
-                        are_foaf=True
+                        are_foaf = True
                     else:
                         are_foaf = are_FOAF(ww_local=ww_user,ww_other=ww_author)
                 except:
