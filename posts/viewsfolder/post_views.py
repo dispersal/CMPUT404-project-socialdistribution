@@ -158,7 +158,7 @@ class PostViewID(views.APIView):
             authorid = post_model.author.id
             user = request.user
             other = self.get_user(authorid)
-            if (are_FOAF(ww_requestor, ww_post_author)):
+            if (are_FOAF(ww_other=ww_requestor, ww_local=ww_post_author)):
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(status=status.HTTP_403_FORBIDDEN)
         if post_model.visibility == "FRIENDS":
