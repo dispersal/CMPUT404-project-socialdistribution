@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from posts.models import Follow, FollowRequest, User, WWUser, Server
-from posts.serializers import FollowSerializer, FollowRequestSerializer, UserSerializer
+from posts.serializers import FollowSerializer, FollowRequestSerializer, UserSerializer, WWUserSerializer
 from urllib.parse import urlparse
 
 
@@ -165,6 +165,26 @@ class FollowReqListView(views.APIView):
             followSerializer.save()
         follow_req = FollowRequest.objects.get(requester=ww_followee, requestee=ww_user)
         follow_req.delete()
+        # only care if follower is local
+        if not ww_followee.local:
+            external_host = ww_followee.url.split('/author')[0]
+            server = Server.objects.get(server=external_host)
+            ww_user_serialized = WWUserSerializer(instance=ww_user)
+            user = {
+                "id": ww_user.url,
+                'host': ww_user_serialized.data['host'],
+                'displayName': request.user.username,
+                'url': ww_user.url
+            }
+            friend_serialized = WWUserSerializer(instance=ww_followee)
+            friend = {
+                'id': ww_followee.url,
+                'host': friend_serialized.data['host'],
+                'displayName': friend_serialized.data['displayName'],
+                'url': ww_followee.url
+
+            }
+            server.send_external_friendrequest(friend, user)
 
         return Response(status=status.HTTP_200_OK)
 
