@@ -445,12 +445,19 @@ def get_ext_foaf(local_user,ext_user):
         ext_friends = get_external_friends(url)
         for follow in local_follows:
             if follow in ext_friends:
-                ww_middle = get_ww_user(parse_id_from_url(follow))
+                url_middle = follow.split('/author/')[-1]
+                id_middle = url_middle[:-1] if url_middle[-1] == '/' else url_middle
+                ww_middle = get_ww_user(id_middle)
                 if ww_middle and ww_middle.local:
-                    return are_friends(ww_middle,local_user) and are_friends(ww_middle,ext_user)
+                    ww_local_friendship = get_follow(follower=ww_middle, followee=local_user)
+                    ww_other_friendship = get_follow(follower=ww_middle, followee=ext_user)
+                    return ww_local_friendship and ww_other_friendship
                 else:
+                    print("MADE IT TO GET EXT FOAF THIRD EXT")
                     final_check_url = follow + ("/" if (follow[-1]!="/") else "") + "friends/"
+                    print(final_check_url)
                     third_friends = get_external_friends(final_check_url)
+                    print(third_friends)
                     if str(ext_user.url) in third_friends and str(local_user.url) in third_friends:
                         return True
         else:
