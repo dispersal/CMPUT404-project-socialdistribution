@@ -277,13 +277,16 @@ def get_external_feed(requestor):
                 try:
                     # Ghetto way to check if the user is following the user locally
                     ww_author = WWUser.objects.get(url=post_dict["author"]["url"])
-                    follow =Follow.objects.get(follower=ww_user,followee=post_dict["author"]["url"])
+                    follow =Follow.objects.get(follower=ww_user,followee=ww_author)
                 except:
                     continue
             if (post_dict["visibility"] == "FOAF"):
                 try:
                     ww_author = WWUser.objects.get(url=post_dict["author"]["url"])
-                    are_foaf = are_FOAF(ww_local=ww_user,ww_other=ww_author)
+                    if follow:
+                        are_foaf=True
+                    else:
+                        are_foaf = are_FOAF(ww_local=ww_user,ww_other=ww_author)
                 except:
                     continue
                 if not are_foaf:
