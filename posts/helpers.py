@@ -86,6 +86,12 @@ def get_friends(ww_user):
 
 def are_FOAF(ww_local, ww_other):
     """Needs WW Users"""
+    # checks if the LOCAL user is a FOAF of the other user
+    # in the context of SERVING posts:
+    #   author = local, requestor = other
+    # in the context of RECIEVING posts:
+    #   author = other, requestor = local
+
     if ww_other.local:
         userfriends = get_friends(ww_local)
         otherfriends = get_friends(ww_other)
@@ -407,13 +413,13 @@ def get_or_create_external_header(external_header):
 def get_ext_foaf(local_user,ext_user):
     # Returns a boolean indicating whether these users are foaf
     # THESE ARE WW USERS
+    # local user is the one which is local
+    # ext_user is the external user
     local_follows = Follow.objects.filter(follower=local_user).values_list("followee",flat=True)
     local_follows = [str(id) for id in local_follows]
-    print(local_follows)
     if local_follows:
         url = ext_user.url + ("/" if (ext_user.url[-1]!="/") else "") + "friends/"
         ext_friends = get_external_friends(url)
-        print(ext_friends)
         for follow in local_follows:
             if follow in ext_friends:
                 print("PASSED FOAF CHECK")
