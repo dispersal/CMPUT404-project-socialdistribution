@@ -84,8 +84,8 @@ class FriendListView(views.APIView):
         print(follows)
         for other in others:
             print("other =" + str(other))
-            other_without_trailing = other[:-1] + ("" if other[-1]=="/" else other[-1] )
-            other_w_trailing = other + ("/" if other[-1]!="/" else "")
+            other_without_trailing = other[:-1] + ("" if other[-1] == "/" else other[-1])
+            other_w_trailing = other + ("/" if other[-1] != "/" else "")
             if (other_without_trailing in follows) or (other_w_trailing in follows):
                 print("success")
                 friends.append(other)
