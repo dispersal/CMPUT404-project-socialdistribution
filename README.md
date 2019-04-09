@@ -7,6 +7,10 @@ See project.org (plain-text/org-mode) for a description of the project.
 
 Make a distributed social network!
 
+Screenshot of Foreign Post on our Node
+========================
+![screenshot of foreign post](https://raw.githubusercontent.com/dispersal/CMPUT404-project-socialdistribution/master/foreignPostscreenshot.png)
+
 
 Team Members
 ========================
@@ -16,6 +20,13 @@ Team Members
     michaelparadis
     npwhite
     tlaz4
+
+
+Collaborative Teams
+========================
+
+We are collaborating with team 14 and team wave.
+
 
 Contributors / Licensing
 ========================
