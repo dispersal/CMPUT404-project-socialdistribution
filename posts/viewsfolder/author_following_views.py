@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from posts.models import Follow, FollowRequest, User, WWUser, Server
-from posts.serializers import FollowSerializer, FollowRequestSerializer, UserSerializer
+from posts.serializers import FollowSerializer, FollowRequestSerializer, UserSerializer, WWUserSerializer
 from urllib.parse import urlparse
 
 
@@ -78,14 +78,19 @@ class FriendListView(views.APIView):
     def post(self, request, pk):
         user = self.get_user(pk)
         ww_user = WWUser.objects.get(user_id=user.id)
-        others = map(self.get_user, request.data['authors'])
+        follows = Follow.objects.filter(follower=ww_user).values_list('followee', flat=True)
+        others = request.data['authors']
         friends = []
+        print(follows)
         for other in others:
-            ww_other = WWUser.objects.get(user_id=other.id)
-            if (self.are_friends(ww_user, ww_other)):
+            print("other =" + str(other))
+            other_without_trailing = other[:-1] + ("" if other[-1] == "/" else other[-1])
+            other_w_trailing = other + ("/" if other[-1] != "/" else "")
+            if (other_without_trailing in follows) or (other_w_trailing in follows):
+                print("success")
                 friends.append(other)
         data = request.data
-        data['authors'] = [str(friend.id) for friend in friends]
+        data['authors'] = [str(friend) for friend in friends]
         return Response(data=data, status=status.HTTP_200_OK)
 
 
@@ -103,7 +108,8 @@ class AreFriendsView(views.APIView):
         except User.DoesNotExist:
             return None
 
-    def get(self, request, authorid1, authorid2, service2=None):
+    def get(self, request, authorid1, authorid2, http=None, service2=None):
+
         authors = [str(authorid1), str(authorid2)]
         data = {
             "query": "friends",
@@ -158,6 +164,26 @@ class FollowReqListView(views.APIView):
             followSerializer.save()
         follow_req = FollowRequest.objects.get(requester=ww_followee, requestee=ww_user)
         follow_req.delete()
+        # only care if follower is local
+        if not ww_followee.local:
+            external_host = ww_followee.url.split('/author')[0]
+            server = Server.objects.get(server=external_host)
+            ww_user_serialized = WWUserSerializer(instance=ww_user)
+            user = {
+                "id": ww_user.url,
+                'host': ww_user_serialized.data['host'],
+                'displayName': request.user.username,
+                'url': ww_user.url
+            }
+            friend_serialized = WWUserSerializer(instance=ww_followee)
+            friend = {
+                'id': ww_followee.url,
+                'host': friend_serialized.data['host'],
+                'displayName': friend_serialized.data['displayName'],
+                'url': ww_followee.url
+
+            }
+            server.send_external_friendrequest(friend, user)
 
         return Response(status=status.HTTP_200_OK)
 
