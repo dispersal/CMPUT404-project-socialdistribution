@@ -208,6 +208,8 @@ class GetAuthorPosts(views.APIView):
         if not external_header:
             user = request.user
             posts = self.authorHelper.get_feed(user, author)
+            if not serve_images:
+                posts = posts.exclude(contentType__in=['img/png;base64', 'image/jpeg;base64'])
             result_page = paginator.paginate_queryset(posts, request)
             serializer = PostSerializer(result_page, many=True)
         else:
@@ -223,6 +225,8 @@ class GetAuthorPosts(views.APIView):
             else:
                 foaf = get_ext_foaf(local_user=ww_author, ext_user=ww_user)
             authorPosts = self.get_posts(author)
+            if not serve_images:
+                authorPosts = authorPosts.exclude(contentType__in=['img/png;base64', 'image/jpeg;base64'])
             posts_list = []
 
             for post in authorPosts:
@@ -322,6 +326,8 @@ class BackEndFeed(views.APIView):
             requestor = get_ww_user(request.user.id)
 
         posts = self.get_posts()
+        if not serve_images:
+            posts = posts.exclude(contentType__in=['img/png;base64', 'image/jpeg;base64'])
         posts_list = []
         for post in posts:
             if visible_to(post, requestor, False, external_header == False):
