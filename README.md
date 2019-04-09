@@ -7,6 +7,10 @@ See project.org (plain-text/org-mode) for a description of the project.
 
 Make a distributed social network!
 
+For information about our application see our wiki
+=========================
+[Link](https://github.com/dispersal/CMPUT404-project-socialdistribution/wiki)
+
 Video showing off some features
 ========================
 
