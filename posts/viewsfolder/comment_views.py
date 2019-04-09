@@ -15,7 +15,6 @@ from posts.serializers import CommentSerializer, PostSerializer
 
 class CommentViewList(views.APIView):
 
-    @method_decorator(login_required)
     def post(self, request, post_id):
         if not request.user.approved:
             raise PermissionDenied
